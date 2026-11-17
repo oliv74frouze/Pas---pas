@@ -23,7 +23,8 @@ Merci de vouloir enrichir Petits Pas ! Chaque exercice est un **petit dossier in
    ```html
    <script src="exercices/memory-animaux/exercice.js"></script>
    ```
-5. **Teste sur une vraie tablette**, puis propose ton exercice (voir « Proposer son exercice »).
+5. **Ajoute ton fichier dans `sw.js`** (liste `FICHIERS`) et augmente `VERSION` : c'est ce qui permet de jouer hors ligne et de mettre à jour l'appli installée.
+6. **Teste sur une vraie tablette**, puis propose ton exercice (voir « Proposer son exercice »).
 
 > 💡 Tu peux te faire aider par une IA : donne-lui ce fichier et l’exercice modèle, puis décris ton idée de jeu.
 

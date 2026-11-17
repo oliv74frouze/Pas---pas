@@ -29,10 +29,21 @@ Des jeux éducatifs de la petite section au CM2, sur tablette, avec un profil pa
 
 Tout reste sur la tablette : rien n’est envoyé sur Internet.
 
+## Installer sur tablette ou téléphone
+
+L'appli est une « PWA » : elle s'installe depuis le navigateur et marche ensuite **sans connexion**.
+- **Android (Chrome)** : menu ⋮ → **Installer l'application** (ou « Ajouter à l'écran d'accueil »).
+- **iPad / iPhone (Safari)** : bouton Partager → **Sur l'écran d'accueil**.
+
+Après une mise à jour du site, l'appli installée se met à jour à la prochaine ouverture avec Internet.
+
 ## Organisation
 
 ```
 index.html                ← la page ; liste les exercices à charger
+manifest.webmanifest      ← nom, icônes, plein écran (installation)
+sw.js                     ← fonctionnement hors ligne (liste des fichiers + VERSION)
+icones/                   ← icônes de l'appli
 kit/
   kit.js                  ← boîte à outils commune (sons, voix, confettis…)
   profils.js              ← profils des enfants, temps d’écran, espace parents
