@@ -29,8 +29,10 @@
 
   /* ---------- 🚗 Petits problèmes ---------- */
   function problemes(zone, kit) {
-    const el = kit.el, max = kit.difficulte().nom === 'Très facile' ? 5 : 6;
-    const types = MS.melanger(['enlever', 'ajouter', 'completer', 'enlever', 'ajouter', 'completer']);
+    // PS : jusqu'à 4, sans « compléter » · MS : jusqu'à 6 · GS : jusqu'à 10
+    const el = kit.el, ps = kit.niveau === 'PS';
+    const max = ps ? 4 : kit.niveau === 'GS' ? 10 : kit.difficulte().nom === 'Très facile' ? 5 : 6;
+    const types = MS.melanger(ps ? ['ajouter', 'ajouter', 'enlever', 'ajouter', 'enlever'] : ['enlever', 'ajouter', 'completer', 'enlever', 'ajouter', 'completer']);
     return kit.partie(zone, {
       manches: types.length, rejouer: () => kit.remplacer('Petits problèmes', z => problemes(z, kit)), pause: 2300,
       jouer(scene, fini, plusTard, n) {
@@ -38,7 +40,7 @@
         const nom = k => k > 1 ? plur : sing, un = k => k === 1 ? (f ? 'une' : 'un') : NOMBRES[k];
         let depart, k, reponse, histoire, question;
         if (T === 'enlever') {
-          depart = MS.entre(3, max); k = MS.entre(1, depart - 1); reponse = depart - k;
+          depart = MS.entre(ps ? 2 : 3, max); k = MS.entre(1, depart - 1); reponse = depart - k;
           histoire = `J’ai ${un(depart)} ${nom(depart)}. J’en donne ${un(k)}.`; question = `Combien m’en reste-t-il ?`;
         } else if (T === 'ajouter') {
           depart = MS.entre(1, max - 1); k = MS.entre(1, Math.min(3, max - depart)); reponse = depart + k;
@@ -130,7 +132,7 @@
   const MOTIFS = ['AB', 'AB', 'AAB', 'ABB', 'ABC'];
   const JEUX = [['🔴', '🔵', '🟡'], ['⭐', '🌙', '☀️'], ['🍎', '🍌', '🍇'], ['🐱', '🐶', '🐰'], ['🟥', '🔺', '🟢'], ['🌸', '🍀', '🍄']];
   function suites(zone, kit) {
-    const el = kit.el, facile = kit.difficulte().nom === 'Très facile';
+    const el = kit.el, facile = kit.difficulte().nom === 'Très facile' || kit.niveau === 'PS';
     return kit.partie(zone, {
       manches: 5, rejouer: () => kit.remplacer('Les suites', z => suites(z, kit)),
       jouer(scene, fini, plusTard, n) {
@@ -201,13 +203,13 @@
   `));
 
   const base = { theme: 'calcul', auteur: 'Petits Pas' };
-  PetitsPas.ajouter({ ...base, id: 'ms-problemes', nom: 'Petits problèmes', icone: '🚗', niveaux: ['MS', 'GS'],
+  PetitsPas.ajouter({ ...base, id: 'ms-problemes', nom: 'Petits problèmes', icone: '🚗', niveaux: ['PS', 'MS', 'GS'],
     description: 'Enlever, ajouter, compléter : résoudre de petits problèmes jusqu’à 6.', lancer: problemes });
   PetitsPas.ajouter({ ...base, id: 'ms-train', nom: 'Le petit train', icone: '🚂', niveaux: ['MS', 'GS'],
     description: 'Premier, deuxième, troisième… trouver le bon wagon.', lancer: train });
-  PetitsPas.ajouter({ ...base, id: 'ms-formes', nom: 'Les formes', icone: '🔺', niveaux: ['PS', 'MS'],
+  PetitsPas.ajouter({ ...base, id: 'ms-formes', nom: 'Les formes', icone: '🔺', niveaux: ['PS', 'MS', 'GS'],
     description: 'Reconnaître les ronds, carrés, triangles et rectangles.', lancer: formes });
-  PetitsPas.ajouter({ ...base, id: 'ms-suites', nom: 'Les suites', icone: '🔁', niveaux: ['MS', 'GS'],
+  PetitsPas.ajouter({ ...base, id: 'ms-suites', nom: 'Les suites', icone: '🔁', niveaux: ['PS', 'MS', 'GS'],
     description: 'Continuer une suite qui se répète.', lancer: suites });
   PetitsPas.ajouter({ ...base, id: 'ms-le-plus', nom: 'Le plus…', icone: '⚖️', niveaux: ['PS', 'MS'],
     description: 'Comparer des quantités, des longueurs et des masses.', lancer: lePlus });

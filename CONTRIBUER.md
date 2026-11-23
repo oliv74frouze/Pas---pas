@@ -95,6 +95,29 @@ Pour bien choisir, appuie-toi sur les attendus des programmes officiels du cycle
 
 Les classes CSS communes : `.pp-consigne`, `.pp-carte`, `.pp-aide` (`.ok` en vert), `.pp-bouton` (`.principal`), `.ecran`, `.ecran.lateral` (palette sur le côté en paysage), `.scene`, `.cadre`, `.barre`, `.bouton-rond`, `.pastille`, `.message`, `.tuiles`/`.tuile`, `.grille`/`.carte`. Si ton exercice a besoin de son propre style, garde-le dans ton fichier en préfixant tes classes (voir `exercices/compter/`).
 
+## Le plus simple : utiliser un moteur
+
+Pour beaucoup d’exercices, pas besoin d’écrire un jeu : il suffit de donner des **données** à un moteur de `exercices/programmes/moteurs.js`.
+
+```js
+PetitsPas.moteurs.quiz({
+  id: 'capitales', nom: 'Les capitales', icone: '🗺️', theme: 'monde', niveaux: ['CM1', 'CM2'],
+  description: 'Trouver la capitale d’un pays.',
+  questions: [
+    { q: 'Quelle est la capitale de l’Espagne ?', options: ['Madrid', 'Lisbonne', 'Rome'], explication: 'Madrid est la capitale de l’Espagne.' }
+  ]   // la bonne réponse est la première (bon: 0) ; les options sont mélangées
+});
+```
+
+| Moteur | Pour… | Données |
+|---|---|---|
+| `quiz` | une question, plusieurs réponses à toucher | `questions: [{ q, options, bon?, explication?, visuel? }]` (ou une fonction `kit => [...]` pour adapter au niveau) |
+| `saisie` | taper un nombre | `generer: (n, kit) => ({ q, visuel?, reponse, unite?, aide? })` |
+| `tri` | ranger des objets dans des boîtes | `bacs: [{ id, nom, visuel }]`, `objets: [[emoji, nom, idBac]]` |
+| `ordre` | remettre des étapes dans l’ordre | `series: [{ titre, etapes: [[emoji, texte], …] }]` |
+
+`kit.niveau` (`'PS'`… `'CM2'`) permet d’adapter le contenu au niveau de l’enfant.
+
 ## Plusieurs exercices dans un même dossier
 
 Un dossier peut inscrire plusieurs exercices qui partagent des données. C’est le cas de `exercices/lecture/` : `mots.js` contient la banque de mots (mot, emoji, sons entendus) et les outils de couleur, et `exercices.js` inscrit 5 exercices. Pour enrichir la lecture, il suffit souvent d’**ajouter des mots** dans `mots.js`.

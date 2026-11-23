@@ -132,7 +132,7 @@
       if (opts.prenom) {
         if (i + 1 < chars.length) setTimeout(() => aller(i + 1), 1300);
         else setTimeout(() => {
-          kit.feuxDArtifice(); kit.dire('Bravo ! Tu as écrit ' + (kit.prenom || 'ton prénom') + ' !');
+          kit.feuxDArtifice(); kit.dire(opts.fin || ('Bravo ! Tu as écrit ' + (kit.prenom || 'ton prénom') + ' !'));
           setTimeout(() => kit.felicitations(null, { encore: () => aller(0) }), 1800);
         }, 900);
       }
@@ -157,6 +157,7 @@
     }
     return tracer(zone, kit, nom.split(''), 0, { prenom: true, titre: 'Mon prénom' });
   }
+  PetitsPas.tracer = tracer; // réutilisé par d'autres exercices (graphisme…)
   PetitsPas.ajouter({
     id: 'mon-prenom', nom: 'Mon prénom', icone: '📛', theme: 'ecriture', niveaux: ['PS', 'MS', 'GS'],
     auteur: 'Petits Pas', description: 'Écrire son prénom en capitales en repassant sur le modèle.',

@@ -21,6 +21,15 @@ Des jeux éducatifs de la petite section au CM2, sur tablette, avec un profil pa
 | 🐱 Où est le chat ? · 🐣 Remets dans l’ordre | Se repérer | PS–GS |
 | 🛟 Flotte ou coule ? · 🧲 L’aimant | Découvrir le monde | MS, GS |
 | 👏 Répète le rythme | Musique | PS, MS, GS |
+| 🐰 L’imagier · 🌅 Le matin ou le soir ? · 🔠 Les lettres de mon prénom · 〰️ Graphisme · 🍴 Mets la table | Maternelle | PS, MS (GS) |
+| ⚖️ La balance · 🍂 Les saisons · 📅 Les jours et les mois · 🦵 Les articulations | Maternelle | GS (CP) |
+| 🧱 Dizaines et unités · 🔤 Nombres en lettres · ⚡ Calcul éclair · 🧮 Problèmes | Calcul & maths | CP → CM2, adaptés au niveau |
+| 🕐 Lire l’heure · 💶 La monnaie · 🧊 Les solides · 📏 Les longueurs | Calcul & maths | CP → CM1 |
+| 🟰 Fractions égales · 🔢 Le plus grand nombre · 📐 Droites · ⬛ Aire · 🦋 Symétrie | Calcul & maths | CE2 → CM2 |
+| 👫 Féminin et pluriel · 🤝 Mots de même sens · 🔗 Accorder le verbe · 🌈 Accorder l’adjectif | Français | CP → CM2 |
+| ⏳ Conjuguer à 4 temps · 🔍 Nature des mots · 🧩 Groupes de la phrase | Français | CE2 → CM2 |
+| 📜 Les frises du temps · 🌍 Questionner le monde · ♻️ Tri des déchets | Se repérer / Monde | CP → CM2 |
+| 🇬🇧 English words | Anglais | CP → CM2 |
 | 🐍 S ou SS ? | Français | CE2, CM1 |
 | ✍️ Le présent (-er), avec -cer et -ger | Français | CE2, CM1 |
 | 🍕 Les fractions (formes générées) | Calcul & maths | CM1, CM2 |
@@ -63,6 +72,7 @@ exercices/
   compter/
   lecture/                ← mots.js (banque de mots) + 5 exercices
   moyenne-section/        ← 13 exercices d’après la fiche officielle de MS
+  programmes/             ← moteurs.js (quiz, saisie, tri, ordre) + exercices PS, GS, CP → CM2
   s-ou-ss/  present-er/  fractions/  anglais-meteo/   ← CE2–CM2
   dessin-libre/
 CONTRIBUER.md             ← comment ajouter ton exercice
