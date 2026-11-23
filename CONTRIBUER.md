@@ -42,7 +42,8 @@ Merci de vouloir enrichir Petits Pas ! Chaque exercice est un **petit dossier in
 | `agilite` | 🫧 Agilité |
 | `logique` | 🧩 Logique |
 | `musique` | 🎵 Musique |
-| `nature` | 🌳 Nature & animaux |
+| `reperer` | 🧭 Se repérer (espace, temps) |
+| `monde` | 🔬 Découvrir le monde (vivant, matière, objets) |
 | `autres` | ✨ Autres jeux |
 
 ## Niveaux scolaires

@@ -36,7 +36,8 @@
     agilite:   { nom: 'Agilité',           icone: '🫧', couleur: '#CFF3F0' },
     logique:   { nom: 'Logique',           icone: '🧩', couleur: '#FFE0C2' },
     musique:   { nom: 'Musique',           icone: '🎵', couleur: '#E3E0FF' },
-    nature:    { nom: 'Nature & animaux',  icone: '🌳', couleur: '#DDF2C8' },
+    reperer:   { nom: 'Se repérer',        icone: '🧭', couleur: '#FFF0C7' },
+    monde:     { nom: 'Découvrir le monde', icone: '🔬', couleur: '#DDF2C8' },
     autres:    { nom: 'Autres jeux',       icone: '✨', couleur: '#EEE7DD' }
   };
 

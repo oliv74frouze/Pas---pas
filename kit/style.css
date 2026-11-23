@@ -104,3 +104,5 @@ main{flex:1;min-height:0;position:relative;display:flex;flex-direction:column}
 .pp-bouton.principal{background:#5CC95C;color:#fff;box-shadow:0 5px 0 #3E9A3E}
 .pp-bouton:active{transform:translateY(3px);box-shadow:0 2px 0 var(--ombre)}
 .pp-bouton.non{animation:pp-secoue .4s}
+.modele-mot{display:flex;justify-content:center;gap:6px;font:700 clamp(30px,5vw,46px) Andika,sans-serif;padding:2px 0;letter-spacing:.05em}
+.modele-mot span{color:#C9B9A6}.modele-mot span.fait{color:#5CC95C}.modele-mot span.actuel{color:#3B2F4A;text-decoration:underline 4px #FFB020;text-underline-offset:6px}

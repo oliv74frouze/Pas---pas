@@ -14,6 +14,13 @@ Des jeux éducatifs de la petite section au CM2, sur tablette, avec un profil pa
 | 👂 J’entends le son… · 🎧 Quel son ? | Lecture | PS, MS, GS |
 | 🖍️ Les lettres du mot · 🧩 Écris le mot | Lecture | GS, CP |
 | 📖 Lis le mot | Lecture | GS, CP, CE1 |
+| 📛 Mon prénom (en capitales, lettre par lettre) | Écriture | PS, MS, GS |
+| 👏 Frappe les syllabes · 🏠 Ça commence comme… · 🔤 Les lettres jumelles | Lecture | MS, GS |
+| 🚗 Petits problèmes · 🚂 Le petit train · 🔁 Les suites | Calcul & maths | MS, GS |
+| 🔺 Les formes · ⚖️ Le plus… | Calcul & maths | PS, MS |
+| 🐱 Où est le chat ? · 🐣 Remets dans l’ordre | Se repérer | PS–GS |
+| 🛟 Flotte ou coule ? · 🧲 L’aimant | Découvrir le monde | MS, GS |
+| 👏 Répète le rythme | Musique | PS, MS, GS |
 | 🐍 S ou SS ? | Français | CE2, CM1 |
 | ✍️ Le présent (-er), avec -cer et -ger | Français | CE2, CM1 |
 | 🍕 Les fractions (formes générées) | Calcul & maths | CM1, CM2 |
@@ -55,6 +62,7 @@ exercices/
   coloriage-magique/      ← exercice.js + dessins.js
   compter/
   lecture/                ← mots.js (banque de mots) + 5 exercices
+  moyenne-section/        ← 13 exercices d’après la fiche officielle de MS
   s-ou-ss/  present-er/  fractions/  anglais-meteo/   ← CE2–CM2
   dessin-libre/
 CONTRIBUER.md             ← comment ajouter ton exercice

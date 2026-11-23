@@ -14,12 +14,14 @@
     zone.append(kit.el('p', { class: 'intro' }, consigne), g);
   }
 
-  function tracer(zone, kit, chars, i) {
+  /** opts.prenom : on enchaîne les lettres d'un mot (le prénom), avec le modèle affiché en haut. */
+  function tracer(zone, kit, chars, i, opts = {}) {
     const el = kit.el, ch = chars[i];
     const base = el('canvas'), encre = el('canvas'), cadre = el('div', { class: 'cadre' }, base, encre);
     const scene = el('div', { class: 'scene' }, cadre);
     const msg = el('div', { class: 'message' }, '👆 Repasse sur la lettre avec ton doigt'); scene.append(msg);
-    const aller = j => kit.remplacer(chars[j], z => tracer(z, kit, chars, j));
+    const aller = j => kit.remplacer(opts.prenom ? opts.titre : chars[j], z => tracer(z, kit, chars, j, opts));
+    if (opts.prenom) zone.append(el('div', { class: 'modele-mot' }, chars.map((c, k) => el('span', { class: k < i ? 'fait' : k === i ? 'actuel' : '' }, c))));
     const suivant = el('button', { class: 'bouton-rond', onclick: () => aller((i + 1) % chars.length) }, '▶');
     zone.append(el('div', { class: 'ecran' }, scene, el('div', { class: 'barre' },
       el('button', { class: 'bouton-rond', onclick: () => aller((i - 1 + chars.length) % chars.length) }, '◀'),
@@ -127,6 +129,13 @@
       const r = cadre.getBoundingClientRect(); kit.confettis(r.left + r.width / 2, r.top + r.height / 2, 70);
       const faits = kit.progres.lire('faits', {}); faits[ch] = 1; kit.progres.ecrire('faits', faits);
       suivant.classList.add('pulse'); msg.textContent = '⭐ Bravo ! ⭐'; msg.style.opacity = 1;
+      if (opts.prenom) {
+        if (i + 1 < chars.length) setTimeout(() => aller(i + 1), 1300);
+        else setTimeout(() => {
+          kit.feuxDArtifice(); kit.dire('Bravo ! Tu as écrit ' + (kit.prenom || 'ton prénom') + ' !');
+          setTimeout(() => kit.felicitations(null, { encore: () => aller(0) }), 1800);
+        }, 900);
+      }
     }
 
     kit.surRedimension(preparer);
@@ -137,6 +146,21 @@
     id: 'tracer-lettres', nom: 'Les lettres', icone: '🔤', theme: 'ecriture', niveaux: ['PS', 'MS'],
     auteur: 'Petits Pas', description: 'Repasser sur les lettres majuscules avec le doigt.',
     lancer: (zone, kit) => grille(zone, kit, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''), 'Choisis une lettre à écrire')
+  });
+  // Mon prénom : en capitales, une lettre après l'autre (« il sait copier son prénom en capitales »)
+  function monPrenom(zone, kit) {
+    const nom = (kit.prenom || '').toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^A-Z]/g, '');
+    if (!nom) {
+      zone.append(kit.el('div', { class: 'oups' }, kit.el('div', { class: 'em' }, '🙂'),
+        'Cet exercice utilise le prénom de l’enfant.', kit.el('small', {}, 'Crée un profil (⚙️ Espace parents) pour l’essayer.')));
+      return;
+    }
+    return tracer(zone, kit, nom.split(''), 0, { prenom: true, titre: 'Mon prénom' });
+  }
+  PetitsPas.ajouter({
+    id: 'mon-prenom', nom: 'Mon prénom', icone: '📛', theme: 'ecriture', niveaux: ['PS', 'MS', 'GS'],
+    auteur: 'Petits Pas', description: 'Écrire son prénom en capitales en repassant sur le modèle.',
+    lancer: monPrenom
   });
   PetitsPas.ajouter({
     id: 'tracer-chiffres', nom: 'Les chiffres', icone: '🔢', theme: 'ecriture', niveaux: ['PS', 'MS'],
