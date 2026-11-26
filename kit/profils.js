@@ -146,6 +146,31 @@
     document.body.append(w);
   };
 
+  /* ---------- choix de la voix ---------- */
+  function blocVoix(R) {
+    const voix = P.voixDisponibles('fr-FR');
+    const essayer = nom => {
+      try {
+        speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance('Bonjour ! On va bien s’amuser. Trouve le son du début de poule.');
+        u.lang = 'fr-FR'; u.pitch = 1; u.rate = R.debit || .9;
+        const v = voix.find(x => x.name === nom) || voix[0]; if (v) u.voice = v;
+        speechSynthesis.speak(u);
+      } catch (e) {}
+    };
+    const select = el('select', { class: 'champ', style: 'font-size:17px' },
+      el('option', { value: '' }, voix.length ? `Automatique (${voix[0].name})` : 'Automatique'),
+      voix.map(v => el('option', { value: v.name }, v.name + (v.localService ? '' : ' · en ligne'))));
+    select.value = R.voixNom || '';
+    select.onchange = () => { R.voixNom = select.value; essayer(select.value); };
+    return el('div', { class: 'bloc-voix' },
+      el('label', {}, 'Voix'),
+      el('div', { class: 'seg' }, select, el('button', { class: 'tog', style: 'flex:0 0 auto', onclick: () => essayer(select.value) }, '▶ Écouter')),
+      el('small', { class: 'astuce' }, voix.length <= 2
+        ? '💡 Peu de voix sur cet appareil. Pour une voix bien plus naturelle : iPad → Réglages › Accessibilité › Contenu énoncé › Voix › Français (télécharger une voix « améliorée » ou « premium »). Android → Paramètres › Synthèse vocale › Google › installer la voix française haute qualité.'
+        : '💡 Les voix « Premium », « améliorée », « Natural » ou Google sont les plus naturelles. On peut en télécharger d’autres dans les réglages de la tablette.'));
+  }
+
   /* ---------- formulaire de profil (création / modification) ---------- */
   P.formulaireProfil = function (existant, quandFini) {
     const p = JSON.parse(JSON.stringify(existant || P.profils.nouveau())), R = p.reglages, creation = !existant;
@@ -178,7 +203,8 @@
       !creation ? el('div', { class: 'conso' }, `Aujourd’hui : ${fmt(P.temps.aujourdhui(p.id))} · Cette semaine : ${fmt(P.temps.semaine(p.id))}`) : null,
       el('h3', {}, '🎚️ Réglages des jeux'),
       el('label', {}, 'Tolérance (tracé, coloriage…)'), choix([0, 1, 2], () => R.niveau, v => P.DIFFICULTES[v].nom, v => { R.niveau = v; }),
-      el('div', { class: 'seg' }, bascule('indices', '💡 Indices de couleur'), bascule('voix', '🔊 Voix'))
+      el('div', { class: 'seg' }, bascule('indices', '💡 Indices de couleur'), bascule('voix', '🔊 Voix')),
+      blocVoix(R)
     ];
     if (!creation) {
       let confirmer = false;

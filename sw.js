@@ -1,7 +1,7 @@
 /* PETITS PAS — service worker : rend l'appli installable et jouable hors ligne.
    ⚠️ Quand tu modifies ou ajoutes un fichier, augmente VERSION
    (et ajoute le nouveau fichier à la liste) pour que les tablettes se mettent à jour. */
-const VERSION = 'petits-pas-v6';
+const VERSION = 'petits-pas-v7';
 const FICHIERS = [
   './',
   'exercices/anglais-meteo/exercice.js',

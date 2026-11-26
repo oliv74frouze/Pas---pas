@@ -128,17 +128,44 @@
   };
 
   /* ---------- voix ---------- */
+  /* Choix de la voix : on prend la plus naturelle installée sur l'appareil.
+     Les voix « neurales » (Google, Microsoft Natural/Online, Apple Premium/Améliorée…)
+     sont nettement moins « robot ». Le parent peut aussi forcer une voix (réglages). */
+  const NATURELLES = [/natural/i, /neural/i, /online/i, /premium/i, /enhanced/i, /améliorée/i, /google/i, /siri/i];
+  const MEDIOCRES = [/compact/i, /espeak/i, /eloquence/i, /grandma|grandpa|rocko|shelley|flo|reed|sandy|eddy/i];
+  function scoreVoix(v, langue) {
+    let sc = 0; const l = (v.lang || '').replace('_', '-').toLowerCase(), nom = v.name || '';
+    if (l === langue.toLowerCase()) sc += 20; else if (l.startsWith(langue.slice(0, 2).toLowerCase())) sc += 5; else return -1;
+    NATURELLES.forEach((r, i) => { if (r.test(nom)) sc += 30 - i; });
+    MEDIOCRES.forEach(r => { if (r.test(nom)) sc -= 40; });
+    if (/amélie|audrey|thomas|denise|henri|vivienne|eloise|remy/i.test(nom)) sc += 8; // bonnes voix françaises connues
+    if (v.localService) sc += 2; // marche hors ligne
+    return sc;
+  }
+  P.voixDisponibles = (langue = 'fr-FR') => {
+    try { return speechSynthesis.getVoices().map(v => [v, scoreVoix(v, langue)]).filter(([, s]) => s >= 0).sort((a, b) => b[1] - a[1]).map(([v]) => v); } catch (e) { return []; }
+  };
+  P.meilleureVoix = (langue = 'fr-FR') => {
+    const liste = P.voixDisponibles(langue), choix = langue.startsWith('fr') && P.reglages.voixNom;
+    return (choix && liste.find(v => v.name === choix)) || liste[0] || null;
+  };
+  try { speechSynthesis.getVoices(); speechSynthesis.addEventListener('voiceschanged', () => {}); } catch (e) {}
+
   /** Lit un texte à voix haute. langue : 'fr-FR' par défaut, 'en-GB' pour l'anglais… */
   P.dire = function (texte, langue = 'fr-FR') {
     if (!P.reglages.voix) return;
     try {
       const s = window.speechSynthesis; if (!s) return;
       s.cancel();
-      const u = new SpeechSynthesisUtterance(texte);
-      u.lang = langue; u.rate = .85; u.pitch = 1.15;
-      const code = langue.slice(0, 2).toLowerCase(), voix = s.getVoices().filter(v => v.lang && v.lang.replace('_', '-').toLowerCase().startsWith(code));
-      const v = voix.find(v => v.lang.replace('_', '-').toLowerCase() === langue.toLowerCase()) || voix[0];
-      if (v) u.voice = v;
+      // ponctuation douce : des pauses naturelles plutôt que des « … » lus bizarrement
+      const u = new SpeechSynthesisUtterance(String(texte).replace(/…/g, ', ').replace(/\s+/g, ' '));
+      u.lang = langue;
+      const v = P.meilleureVoix(langue); if (v) u.voice = v;
+      // Pas de voix aiguë artificielle : c'est elle qui fait « robot ».
+      // Un débit un peu plus lent pour les petits, normal pour les grands.
+      const petit = ['PS', 'MS', 'GS'].includes(P.profils && P.profils.actif && P.profils.actif.niveau);
+      u.rate = (P.reglages.debit || (petit ? .88 : .95)) * (v && /google|natural|online/i.test(v.name) ? 1 : .97);
+      u.pitch = 1;
       s.speak(u);
     } catch (e) {}
   };
