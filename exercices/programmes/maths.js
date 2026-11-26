@@ -16,7 +16,7 @@
     generer(k, kit) {
       const r = niv(kit);
       if (r === 0 || (r === 1 && k < 3)) { // dessin : barres de 10 et cubes
-        const d = E(1, 9), u = E(0, 9), n = d * 10 + u;
+        const d = E(1, r === 0 && kit.periode <= 2 ? 5 : 9), u = E(0, 9), n = d * 10 + u;
         return { q: 'Combien y a-t-il de cubes ?', reponse: n, aide: 'Compte les barres de 10 (les dizaines), puis les cubes seuls (les unités).',
           apres: `${d} dizaine${d > 1 ? 's' : ''} et ${u} unité${u > 1 ? 's' : ''} : ${n}.`,
           visuel: () => el('div', { class: 'pg-base10' }, el('div', { class: 'pg-barres' }, Array.from({ length: d }, () => el('div', { class: 'pg-barre' }))),
@@ -41,7 +41,20 @@
   });
 
   /* ---------- ⚡ Calcul éclair (CP → CM2) : calcul mental chronométré ---------- */
+  // Objectifs précis de calcul mental du CP (programme de mathématiques du cycle 2)
+  const FOCUS_CP = {
+    tables: () => H([() => { const a = E(0, 10), b = E(0, 10); return [`${a} + ${b}`, a + b]; },
+      () => { const s = E(5, 20), a = E(Math.max(0, s - 10), Math.min(10, s)); return [`${a} + ? = ${s}`, s - a]; }])(),
+    doubles: () => H([() => { const a = E(1, 10); return [`le double de ${a}`, 2 * a]; }, () => { const a = E(1, 10); return [`la moitié de ${2 * a}`, a]; },
+      () => { const a = H([15, 20, 25, 30, 40, 50]); return [`le double de ${a}`, 2 * a]; }])(),
+    dizaines: kit => { const max = kit.periode <= 2 ? 59 : 100; return H([() => { const a = E(1, max - 2), k = H([1, 2]); return [`${a} + ${k}`, a + k]; }, () => { const a = E(3, max), k = H([1, 2]); return [`${a} − ${k}`, a - k]; },
+      () => { const a = E(1, max - 10); return [`${a} + 10`, a + 10]; }, () => { const a = E(11, max); return [`${a} − 10`, a - 10]; }, () => { const a = E(1, 5), b = E(1, 9 - a); return [`${a * 10} + ${b * 10}`, (a + b) * 10]; }])(); },
+    complement: kit => { const a = E(11, kit.periode <= 2 ? 58 : 98); if (a % 10 === 0) return [`${a - 3} + ? = ${a}`, 3]; const d = Math.ceil(a / 10) * 10; return [`${a} + ? = ${d}`, d - a]; },
+    ajouter: () => H([() => { const a = E(11, 80), b = E(2, 8); return [`${a} + ${b}`, a + b]; }, () => { const a = E(5, 80); return [`${a} + 9`, a + 9]; },
+      () => { const a = E(2, 8) * 10, b = E(1, 9); return [`${a} − ${b}`, a - b]; }, () => { const a = E(11, 40), b = E(11, 40); return [`${a} + ${b}`, a + b]; }])()
+  };
   function calcul(kit) {
+    if (kit.focus && FOCUS_CP[kit.focus]) return FOCUS_CP[kit.focus](kit);
     const r = niv(kit), t = E(0, 5);
     if (r === 0) return [() => { const a = E(1, 9), b = E(1, 9); return [`${a} + ${b}`, a + b]; },
       () => { const s = E(8, 15), a = E(1, s - 1); return [`${a} + ? = ${s}`, s - a]; },
@@ -70,13 +83,20 @@
   M.saisie({
     id: 'calcul-eclair', nom: 'Calcul éclair', icone: '⚡', theme: 'calcul', niveaux: ['CP', 'CE1', 'CE2', 'CM1', 'CM2'], manches: 10, chrono: true, virgule: true,
     description: 'Calcul mental chronométré, adapté au niveau (tables, doubles, compléments, décimaux…).',
-    generer(k, kit) { const [q, rep] = calcul(kit); return { q: 'Calcule de tête', visuel: q.replace('?', '…') + ' = ?', dire: q.replace('×', 'fois').replace('−', 'moins').replace(':', 'divisé par').replace('?', 'combien'), reponse: rep }; }
+    generer(k, kit) { const [q, rep] = calcul(kit); return { q: 'Calcule de tête', visuel: q.includes('?') ? q.replace('?', '…') : q + ' = ?', dire: q.replace('×', 'fois').replace('−', 'moins').replace(':', 'divisé par').replace('?', 'combien'), reponse: rep }; }
   });
 
   /* ---------- 🧮 Problèmes (CE1 → CM2) ---------- */
   const PRENOMS = ['Lucie', 'Pierre', 'Inès', 'Malo', 'Yasmine', 'Hugo', 'Léna', 'Sacha', 'Nina', 'Adam'];
   function probleme(kit) {
     const r = niv(kit), [a1, a2] = M.melanger(PRENOMS), c = E(0, 3);
+    if (kit.niveau === 'CP') return [
+      () => { const x = E(5, 40), y = E(3, 30); return { q: `${a1} a ${x} billes. On lui en donne ${y}. Combien de billes a maintenant ${a1} ?`, reponse: x + y, unite: 'billes', aide: 'On lui en donne : on ajoute.' }; },
+      () => { const x = E(15, 60), y = E(3, x - 5); return { q: `Il y a ${x} oiseaux sur un arbre. ${y} s’envolent. Combien en reste-t-il ?`, reponse: x - y, unite: 'oiseaux', aide: 'Ils s’envolent : il en reste moins, on enlève.' }; },
+      () => { const t = E(10, 30), p = E(3, t - 3); return { q: `Dans la classe, il y a ${t} élèves. ${p} sont des filles. Combien y a-t-il de garçons ?`, reponse: t - p, unite: 'garçons', aide: 'Les filles et les garçons font toute la classe : cherche ce qui manque.' }; },
+      () => { const n = E(2, 5), k = E(2, 6); return { q: `${n} enfants ont chacun ${k} bonbons. Combien de bonbons en tout ?`, reponse: n * k, unite: 'bonbons', aide: `${n} fois ${k} bonbons : tu peux faire ${Array(n).fill(k).join(' + ')}.` }; },
+      () => { const n = H([2, 3, 4, 5]), k = E(2, 6); return { q: `On partage ${n * k} images entre ${n} enfants. Chacun en a autant. Combien d’images pour chacun ?`, reponse: k, unite: 'images', aide: `Distribue une image à chacun, tour par tour, jusqu’à ce qu’il n’en reste plus.` }; },
+      () => { const x = E(3, 10), y = E(2, 8), z = E(1, 8); return { q: `${a1} a ${x} cartes. ${a2} lui en donne ${y}, puis ${a1} en perd ${Math.min(z, x + y - 1)}. Combien de cartes a ${a1} à la fin ?`, reponse: x + y - Math.min(z, x + y - 1), unite: 'cartes', aide: 'Fais les étapes dans l’ordre : d’abord ce qu’elle reçoit, puis ce qu’elle perd.' }; }][E(0, 5)]();
     if (r <= 1) return [
       () => { const x = E(100, 300), y = E(12, 99); return { q: `${a1} a ${x} billes. ${a2} en a ${y} de plus. Combien ${a2} a-t-il de billes ?`, reponse: x + y, unite: 'billes', aide: '« De plus » : on ajoute.' }; },
       () => { const x = E(60, 200), y = E(11, 59); return { q: `${a1} avait ${x} images. Elle en donne ${y}. Combien lui en reste-t-il ?`, reponse: x - y, unite: 'images', aide: 'Elle en donne : il lui en reste moins, on soustrait.' }; },
@@ -99,7 +119,7 @@
       () => { const pr = E(4, 9) * 10, re = H([10, 20, 25, 50]); return { q: `Un jeu coûte ${pr} €. Il est soldé à −${re} %. Combien coûte-t-il maintenant ?`, reponse: pr - pr * re / 100, unite: '€', aide: `${re} % de ${pr} €, c’est ${F(pr * re / 100, 0)} €. On l’enlève au prix.` }; }][c]();
   }
   M.saisie({
-    id: 'problemes', nom: 'Problèmes', icone: '🧮', theme: 'calcul', niveaux: ['CE1', 'CE2', 'CM1', 'CM2'], manches: 5, virgule: true,
+    id: 'problemes', nom: 'Problèmes', icone: '🧮', theme: 'calcul', niveaux: ['CP', 'CE1', 'CE2', 'CM1', 'CM2'], manches: 5, virgule: true,
     description: 'Problèmes à une ou plusieurs étapes, adaptés au niveau (monnaie, partage, proportionnalité…).',
     generer: (k, kit) => { const P = probleme(kit); return { q: 'Lis le problème et trouve la réponse', visuel: P.q, dire: P.q, reponse: P.reponse, unite: P.unite, aide: P.aide }; }
   });
@@ -179,17 +199,18 @@
 
   /* ---------- 🔢 Comparer les nombres (CE2 → CM2, décimaux) ---------- */
   M.quiz({
-    id: 'comparer-nombres', nom: 'Le plus grand nombre', icone: '🔢', theme: 'calcul', niveaux: ['CE2', 'CM1', 'CM2'], manches: 6,
+    id: 'comparer-nombres', nom: 'Le plus grand nombre', icone: '🔢', theme: 'calcul', niveaux: ['CP', 'CE1', 'CE2', 'CM1', 'CM2'], manches: 6,
     description: 'Comparer des nombres entiers et décimaux.',
     questions: kit => Array.from({ length: 10 }, () => {
       const r = niv(kit); let nb;
-      if (r <= 2) { const base = E(1000, 9000); nb = [base, base + H([10, 100, -90, 9]), Number(String(base).split('').reverse().join(''))]; }
+      if (r <= 1) { const max = r === 0 ? (kit.periode <= 2 ? 59 : 100) : 1000, a = E(10, max - 1), d = String(a).split('').reverse().join(''); nb = [a, Number(d) === a ? a + 10 : Number(d), Math.max(1, a + H([-1, 1, -10, 10]))].map(x => Math.min(max, x)); }
+      else if (r <= 2) { const base = E(1000, 9000); nb = [base, base + H([10, 100, -90, 9]), Number(String(base).split('').reverse().join(''))]; }
       else if (r === 3) { const e = E(1, 9), a = E(1, 9); nb = [e + a / 10, e + E(10, 99) / 100, e + (a - 1 >= 0 ? (a - 1) : 0) / 10 + E(1, 9) / 100]; }
       else { const e = E(1, 9), a = E(1, 9); nb = [e + a / 10, e + E(100, 999) / 1000, e + E(10, 99) / 100]; }
       nb = [...new Set(nb.map(x => Math.round(x * 1000) / 1000))]; while (nb.length < 3) nb.push(nb[0] + 1);
       const max = Math.max(...nb), dec = r >= 4 ? 3 : r === 3 ? 2 : 0;
       return { q: 'Quel est le plus grand nombre ?', options: [F(max, 0), ...nb.filter(x => x !== max).map(x => F(x, 0))],
-        explication: r >= 3 ? 'Compare d’abord la partie entière, puis les dixièmes, puis les centièmes… (0,5 est plus grand que 0,25).' : 'Compare d’abord les milliers, puis les centaines…' };
+        explication: r >= 3 ? 'Compare d’abord la partie entière, puis les dixièmes, puis les centièmes… (0,5 est plus grand que 0,25).' : r <= 1 ? 'Compare d’abord les dizaines, puis les unités.' : 'Compare d’abord les milliers, puis les centaines…' };
     })
   });
 

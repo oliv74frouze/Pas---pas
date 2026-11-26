@@ -149,3 +149,25 @@ Les exercices sont relus avant d’être publiés :
 3. Une fois accepté, l’exercice apparaît pour tout le monde.
 
 Merci ! 🌈
+
+## Suivre les objectifs du programme (référentiels)
+
+Un **référentiel** relie les objectifs officiels d'un niveau aux exercices de l'appli.
+Le CP est le pilote : `exercices/programmes/referentiel-cp.js`.
+
+```js
+PetitsPas.suivi.ajouterReferentiel('CE1', { nom: 'CE1', source: '…' }, [
+  { id: 'ce1-m-tables', domaine: 'Maths · Calcul mental',
+    titre: 'Les tables d’addition',          // pour les parents
+    enfant: 'Mes tables',                     // pour l'enfant
+    officiel: 'Résumé de l’objectif officiel',
+    periodes: [1, 2, 3],                      // quand c'est travaillé en classe
+    exercices: [{ id: 'calcul-eclair', focus: 'tables' }], // [] = pas encore dans l'appli
+    fondamental: true, icone: '➕', note: 'Conseil facultatif' }
+]);
+```
+
+- L'exercice reçoit `kit.focus` (ici `'tables'`) et `kit.periode` (1 à 5) : il peut s'en servir pour cibler ce qu'il propose.
+- Chaque partie terminée est enregistrée (manches, erreurs). Statut : *acquis* = 80 % ou plus deux jours différents ; *à revoir* = moins de 60 %.
+- Le parent coche « En classe » ou « Fragile » dans **⚙️ › profil › 📚 Où en est … ?** ; l'enfant voit **⭐ Mes révisions du moment**.
+- Tout reste sur la tablette. Pensez à ajouter le fichier dans `index.html` et `sw.js`.

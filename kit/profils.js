@@ -167,9 +167,50 @@
       el('label', {}, 'Voix'),
       el('div', { class: 'seg' }, select, el('button', { class: 'tog', style: 'flex:0 0 auto', onclick: () => essayer(select.value) }, '▶ Écouter')),
       el('small', { class: 'astuce' }, voix.length <= 2
-        ? '💡 Peu de voix sur cet appareil. Pour une voix bien plus naturelle : iPad → Réglages › Accessibilité › Contenu énoncé › Voix › Français (télécharger une voix « améliorée » ou « premium »). Android → Paramètres › Synthèse vocale › Google › installer la voix française haute qualité.'
-        : '💡 Les voix « Premium », « améliorée », « Natural » ou Google sont les plus naturelles. On peut en télécharger d’autres dans les réglages de la tablette.'));
+        ? '💡 Peu de voix sur cet appareil : suivez le guide pour en installer une bien plus naturelle.'
+        : '💡 Les voix « Premium », « Améliorée », « Natural » ou Google sont les plus naturelles.'),
+      el('button', { class: 'tog', onclick: () => P.guideVoix() }, '📖 Comment avoir une voix plus naturelle ?'));
   }
+
+  /* ---------- guide pas à pas : installer une voix de qualité ---------- */
+  const GUIDES = {
+    ipad: { nom: 'iPad / iPhone', etapes: [
+      ['⚙️', 'Ouvrez l’app Réglages, puis Accessibilité › Contenu énoncé.'],
+      ['🗣️', 'Touchez Voix, puis Français.'],
+      ['⭐', 'Choisissez une voix marquée « Améliorée » ou « Premium » (par exemple Audrey ou Thomas). Touchez ▶ pour l’écouter.'],
+      ['☁️', 'Touchez le nuage pour la télécharger. Restez en Wi-Fi : elle pèse quelques centaines de Mo.'],
+      ['🔄', 'Fermez complètement Petits Pas (balayez l’app vers le haut), puis rouvrez-la.'],
+      ['✅', 'Dans Petits Pas : ⚙️ › le profil › Voix. Choisissez la nouvelle voix et touchez ▶ Écouter.']
+    ] },
+    android: { nom: 'Android', etapes: [
+      ['🔍', 'Ouvrez Paramètres et cherchez « synthèse vocale ». Le menu s’appelle « Synthèse vocale » ou « Sortie de la synthèse vocale » (chez Samsung : Gestion globale › Synthèse vocale).'],
+      ['🟢', 'Moteur préféré : choisissez « Services Google » (Speech Services by Google). S’il n’apparaît pas, installez-le ou mettez-le à jour depuis le Play Store.'],
+      ['⚙️', 'Touchez la roue dentée à côté du moteur Google, puis Installer des données vocales › Français (France).'],
+      ['⬇️', 'Téléchargez les données, puis choisissez la voix qui vous plaît (on peut les écouter).'],
+      ['🔄', 'Fermez complètement Petits Pas, puis rouvrez-la.'],
+      ['✅', 'Dans Petits Pas : ⚙️ › le profil › Voix. Choisissez la voix « Google » et touchez ▶ Écouter.']
+    ] },
+    ordi: { nom: 'Ordinateur', etapes: [
+      ['🌐', 'Utilisez Chrome ou Edge : ils proposent des voix naturelles (« Google français », « Microsoft … Online (Natural) »), à condition d’être connecté à Internet.'],
+      ['✅', 'Dans Petits Pas : ⚙️ › le profil › Voix, choisissez-en une et touchez ▶ Écouter.']
+    ] }
+  };
+  P.guideVoix = function () {
+    const ua = navigator.userAgent, appareil = /android/i.test(ua) ? 'android' : (/iPad|iPhone|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)) ? 'ipad' : 'ordi';
+    const corps = el('div'), onglets = el('div', { class: 'seg' });
+    const montrer = k => {
+      [...onglets.children].forEach(b => b.classList.toggle('on', b.dataset.k === k));
+      corps.replaceChildren(el('ol', { class: 'guide-etapes' }, GUIDES[k].etapes.map(([e, t]) => el('li', {}, el('span', { class: 'guide-em' }, e), el('span', {}, t)))));
+    };
+    Object.entries(GUIDES).forEach(([k, g]) => onglets.append(el('button', { 'data-k': k, onclick: () => montrer(k) }, g.nom + (k === appareil ? ' (cet appareil)' : ''))));
+    const w = el('div', { class: 'voile', style: 'z-index:85' }, el('div', { class: 'panneau' },
+      el('h2', {}, '🗣️ Une voix plus naturelle'),
+      el('small', { class: 'astuce' }, 'Petits Pas utilise la voix de la tablette. Les voix de base sonnent « robot » ; les voix de qualité se téléchargent gratuitement en quelques minutes et marchent ensuite hors ligne.'),
+      onglets, corps,
+      el('small', { class: 'astuce' }, 'Les menus peuvent changer un peu selon la version et la marque de l’appareil.'),
+      el('button', { class: 'carte', style: 'background:#FFD93B;padding:14px', onclick: () => w.remove() }, 'Compris')));
+    montrer(appareil); document.body.append(w);
+  };
 
   /* ---------- formulaire de profil (création / modification) ---------- */
   P.formulaireProfil = function (existant, quandFini) {
@@ -206,6 +247,9 @@
       el('div', { class: 'seg' }, bascule('indices', '💡 Indices de couleur'), bascule('voix', '🔊 Voix')),
       blocVoix(R)
     ];
+    if (!creation && P.suivi && P.suivi.referentiel(p.niveau)) {
+      blocs.splice(1, 0, el('button', { class: 'carte', style: 'background:#DCEBFF;padding:14px;font-size:22px', onclick: () => P.suivi.panneau(existant) }, `📚 Où en est ${p.prenom} en classe ?`));
+    }
     if (!creation) {
       let confirmer = false;
       blocs.push(el('div', { class: 'seg' },

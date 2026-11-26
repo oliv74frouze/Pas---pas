@@ -40,10 +40,17 @@
   $('#reglages').onclick = () => P.portailParent(espaceParents);
 
   /* ---------- le kit remis à chaque exercice ---------- */
-  function kitPour(ex) {
+  function kitPour(ex, opts = {}) {
     const pid = P.profils.actif ? P.profils.actif.id : 'invite';
     const cle = k => 'progres.' + pid + '.' + ex.id + '.' + k;
     const prenom = P.profils.actif ? P.profils.actif.prenom : '';
+    // Suivi : on compte les erreurs (chaque « boing ») et on enregistre la séance à la fin
+    let erreurs = 0, enregistre = false;
+    const sons = Object.assign({}, P.sons, { rate(...a) { erreurs++; return P.sons.rate(...a); } });
+    const finSeance = manches => {
+      if (enregistre || !P.profils.actif || !P.suivi) return; enregistre = true;
+      P.suivi.enregistrer(P.profils.actif.id, ex.id, opts.focus, manches || 1, erreurs);
+    };
     const kit = {
       /**
        * Déroulé « en manches » prêt à l'emploi : étoiles ⭐⚪ en haut, une
@@ -59,6 +66,7 @@
         function suivante() {
           points.textContent = '⭐'.repeat(n) + '⚪'.repeat(manches - n); scene.innerHTML = '';
           if (n === manches) {
+            finSeance(manches);
             kit.feuxDArtifice(); kit.progres.ecrire('parties', kit.progres.lire('parties', 0) + 1);
             plusTard(() => kit.dire(prenom ? `Bravo ${prenom} !` : 'Bravo !'), 600);
             plusTard(() => kit.felicitations(null, { encore: rejouer }), 2000);
@@ -73,10 +81,13 @@
     return Object.assign(kit, {
       // outils
       el, couleurs: P.COULEURS, arcEnCiel: P.ARCENCIEL, encre: P.ENCRE,
-      sons: P.sons, dire: P.dire, confettis: P.confettis, feuxDArtifice: P.feuxDArtifice,
+      sons, dire: P.dire, confettis: P.confettis, feuxDArtifice: P.feuxDArtifice,
       preparerToile: P.preparerToile,
       // l'enfant qui joue (prénom vide en mode invité)
       prenom, niveau: P.profils.actif ? P.profils.actif.niveau : null,
+      // objectif précis demandé (ex. « tables d'addition ») et période de l'année (1 à 5)
+      focus: opts.focus || null,
+      periode: P.suivi ? P.suivi.periode(P.profils.actif) : 3,
       // navigation
       ouvrir, remplacer, retour,
       titre: t => { $('#titre').textContent = t; pile[pile.length - 1].titre = t; },
@@ -89,6 +100,7 @@
       surRedimension: fn => { surRedim = fn; },
       // écran « Bravo ! » avec boutons Encore / Menu
       felicitations(message, { encore } = {}) {
+        finSeance(1);
         message = message || (prenom ? `Bravo ${prenom} ! 🎉` : 'Bravo ! 🎉');
         const boutons = [];
         if (encore) boutons.push(['🔁 Encore', encore]);
@@ -145,10 +157,29 @@
     const p = P.profils.actif; if (!p) return P.retourAuxProfils();
     const N = niveau(p.niveau), g = grilleThemes(N);
     zone.append(el('p', { class: 'intro' }, `${N.icone} ${N.nom}`));
+    // Révisions du moment : ce que la classe travaille (calendrier officiel + ce que le parent a coché)
+    if (P.suivi && P.suivi.referentiel(p.niveau)) {
+      const sugg = P.suivi.suggestions(p);
+      if (sugg.length) zone.append(el('div', { class: 'revisions-carte' }, el('button', { class: 'carte revisions', onclick: () => ouvrir('Mes révisions', revisions) },
+        el('span', { class: 'em' }, '⭐'), 'Mes révisions du moment', el('small', {}, `${sugg.length} choses à travailler, comme en classe`))));
+    }
     if (g.children.length) zone.append(g);
     else zone.append(el('p', { class: 'intro' }, 'Pas encore de jeux pour ce niveau… Essaie les autres niveaux !'));
     zone.append(el('div', { class: 'rang-bas' },
       el('button', { class: 'carte petite', onclick: () => ouvrir('Tous les niveaux', niveaux) }, '🧭 Autres niveaux')));
+  }
+
+  // 2 bis. Les révisions du moment
+  function revisions(zone) {
+    const p = P.profils.actif; if (!p) return P.retourAuxProfils();
+    const g = el('div', { class: 'grille' });
+    for (const o of P.suivi.suggestions(p)) {
+      const ex = P.exercices.find(e => e.id === o.exercice.id); if (!ex) continue;
+      const st = P.suivi.statut(p, o);
+      g.append(el('button', { class: 'carte', style: 'background:#FFF4D6', onclick: () => lancer(ex, { focus: o.exercice.focus, titre: o.enfant || o.titre }) },
+        el('span', { class: 'em' }, o.icone || ex.icone), o.enfant || o.titre, el('small', {}, P.suivi.STATUTS[st].enfant)));
+    }
+    zone.append(el('p', { class: 'intro' }, 'Ce qu’on travaille en classe en ce moment'), g);
   }
 
   // 3. Tous les niveaux (pour s'avancer ou revoir les bases)
@@ -185,9 +216,10 @@
     zone.append(g);
   }
 
-  function lancer(ex) {
-    ouvrir(ex.nom, z => ex.lancer(z, kitPour(ex)));
+  function lancer(ex, opts = {}) {
+    ouvrir(opts.titre || ex.nom, z => ex.lancer(z, kitPour(ex, opts)));
   }
+  P.lancerExercice = lancer;
 
   /* ---------- espace parents (après la question de calcul) ---------- */
   function espaceParents() {

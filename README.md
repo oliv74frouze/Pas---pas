@@ -97,3 +97,11 @@ Pour la tablette, publie le dossier (par exemple avec GitHub Pages), ouvre l’a
 ## Contribuer
 
 Lis **[CONTRIBUER.md](CONTRIBUER.md)**, copie `exercices/eclate-bulles/`, et à toi de jouer !
+
+## Où en est mon enfant ? (pilote CP)
+
+Pour un enfant de CP, **⚙️ › son profil › 📚 Où en est … ?** montre les objectifs officiels du programme (BO du 31 octobre 2024), période par période, avec un statut calculé à partir de ses parties. Le parent peut cocher « 📒 En classe » (ce que la maîtresse travaille en ce moment, vu dans le cahier) ou « ⚠️ Fragile ». L'enfant retrouve sur son accueil **⭐ Mes révisions du moment** : cinq activités choisies d'après tout cela. Aucune démarche demandée à l'enseignant, aucune donnée ne quitte la tablette.
+
+## Une voix plus naturelle
+
+⚙️ › profil › Voix › **📖 Comment avoir une voix plus naturelle ?** : guide pas à pas pour iPad, Android et ordinateur.

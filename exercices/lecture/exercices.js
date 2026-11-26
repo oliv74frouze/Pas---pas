@@ -199,9 +199,9 @@
   }
 
   const base = { theme: 'lecture', auteur: 'Petits Pas' };
-  PetitsPas.ajouter({ ...base, id: 'lecture-son-entendu', nom: 'J’entends le son…', icone: '👂', niveaux: ['PS', 'MS', 'GS'],
+  PetitsPas.ajouter({ ...base, id: 'lecture-son-entendu', nom: 'J’entends le son…', icone: '👂', niveaux: ['PS', 'MS', 'GS', 'CP'],
     description: 'Trouver les images dont le nom contient un son.', lancer: sonEntendu });
-  PetitsPas.ajouter({ ...base, id: 'lecture-quel-son', nom: 'Quel son ?', icone: '🎧', niveaux: ['PS', 'MS', 'GS'],
+  PetitsPas.ajouter({ ...base, id: 'lecture-quel-son', nom: 'Quel son ?', icone: '🎧', niveaux: ['PS', 'MS', 'GS', 'CP'],
     description: 'Choisir l’image où l’on entend le son.', lancer: quelSon });
   PetitsPas.ajouter({ ...base, id: 'lecture-lettres-du-mot', nom: 'Les lettres du mot', icone: '🖍️', niveaux: ['GS', 'CP'],
     description: 'Colorier les lettres qu’on entend dans un mot.', lancer: lettresDuMot });

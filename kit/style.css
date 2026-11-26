@@ -108,3 +108,8 @@ main{flex:1;min-height:0;position:relative;display:flex;flex-direction:column}
 .modele-mot span{color:#C9B9A6}.modele-mot span.fait{color:#5CC95C}.modele-mot span.actuel{color:#3B2F4A;text-decoration:underline 4px #FFB020;text-underline-offset:6px}
 .bloc-voix{display:flex;flex-direction:column;gap:6px}
 .astuce{font-size:14px;opacity:.7;line-height:1.35}
+
+.guide-etapes{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;counter-reset:e}
+.guide-etapes li{display:flex;gap:12px;align-items:flex-start;background:#F6F0E7;border-radius:16px;padding:10px 14px;font-size:17px;line-height:1.4;counter-increment:e}
+.guide-etapes li::before{content:counter(e);font:700 18px Fredoka,sans-serif;background:#3B2F4A;color:#fff;border-radius:50%;min-width:28px;height:28px;display:flex;align-items:center;justify-content:center}
+.guide-em{font-size:24px;line-height:1}

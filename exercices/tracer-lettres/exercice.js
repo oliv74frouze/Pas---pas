@@ -143,7 +143,7 @@
   }
 
   PetitsPas.ajouter({
-    id: 'tracer-lettres', nom: 'Les lettres', icone: '🔤', theme: 'ecriture', niveaux: ['PS', 'MS'],
+    id: 'tracer-lettres', nom: 'Les lettres', icone: '🔤', theme: 'ecriture', niveaux: ['PS', 'MS', 'GS', 'CP'],
     auteur: 'Petits Pas', description: 'Repasser sur les lettres majuscules avec le doigt.',
     lancer: (zone, kit) => grille(zone, kit, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''), 'Choisis une lettre à écrire')
   });
